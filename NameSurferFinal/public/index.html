@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <title>Name Surfer</title>
+</head>
+     <body class="container-fluid">
+      <div style="margin:auto; display:table">
+    <p class="h2">Name Surfer</p>
+    <p class="lead"> Welcome to the name surfer app!</p>   
+        <div class="input-group">
+           <span class="input-group-addon" id="sizing-addon1">Enter name</span>
+            <input class="form-control" id="input" type="text" name="word">
+        </div>
+    </div>
+
+<ul id="results">
+</ul>
+  
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script>
+    $(document).ready(() => {
+        // set a listener on the textbox
+        $('#input').on("change", (evt) => {
+            let text = $('#input').val();
+            // the {text: text} sends a parameter named text with the
+            // value of what was typed in the textbox
+            $.get("/name", {name: text})
+                    .done((data) => {
+                        $('#input').val('');
+                        drawChart(data);
+                    })
+                    .fail((xhr) => {
+                        alert('Problem contacting server');
+                        console.log(xhr);
+                    });
+        });
+    });
+</script>
+
+<script  src="https://www.gstatic.com/charts/loader.js"></script>
+<script>
+
+        
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart(values) {
+        console.log(values);
+        var data = google.visualization.arrayToDataTable([
+          ['Year', values[0]],
+          ['1900',  parseInt(values[1])],
+          ['1910',  parseInt(values[2])],
+          ['1920',  parseInt(values[3])],
+          ['1930',  parseInt(values[4])],
+          ['1940',  parseInt(values[5])],
+          ['1950',  parseInt(values[6])],
+          ['1960',  parseInt(values[7])],
+          ['1970',  parseInt(values[8])],
+          ['1980',  parseInt(values[9])],
+          ['1990',  parseInt(values[10])],
+          ['2000',  parseInt(values[11])],
+        ]);
+
+        var options = {
+          title: 'Name Surfer',
+          curveType: 'function',
+          legend: { position: 'bottom' },
+          vAxis: { title: 'Popularity Rank',
+                    direction: -1},
+          hAxis: {title: 'Year'}
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+        chart.draw(data, options);
+      }
+    </script>
+
+
+  <div id="curve_chart" style="width: 900px; height: 500px"></div>
+
+
+
+</body>
+</html>
